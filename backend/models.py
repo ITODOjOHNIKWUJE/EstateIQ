@@ -3,7 +3,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import datetime, os
 
-DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///database/db.sqlite3')
+# Ensure Render can create and write to a folder that exists
+os.makedirs("instance", exist_ok=True)
+DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///instance/db.sqlite3')
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
