@@ -1,0 +1,45 @@
+EstateIQ — Setup Guide (Windows)
+
+Prerequisites:
+- Install Python 3.9/3.10/3.11: https://www.python.org/downloads/windows/
+- Install Node.js (16+): https://nodejs.org/en/download/
+- Install Git: https://git-scm.com/downloads
+- Recommended: Visual Studio Code
+
+1) Backend (Flask)
+- Open PowerShell
+- cd to the project backend folder, e.g.:
+  cd C:\\path\\to\\EstateIQ_full_with_demo\\backend
+- Create virtual environment:
+  python -m venv venv
+- Activate venv:
+  .\\venv\\Scripts\\Activate.ps1
+  (If execution policy blocks, run PowerShell as admin and run: Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force)
+- Install requirements:
+  pip install -r requirements.txt
+- Create DB tables:
+  python models.py
+- Create admin account:
+  python seed_admin.py
+- Load demo data (creates landlord, tenant, property, unit, lease, payment):
+  python seed_demo.py
+- Run the backend:
+  python app.py
+- Backend: http://localhost:5000
+
+2) Frontend (React)
+- Open new PowerShell
+- cd C:\\path\\to\\EstateIQ_full_with_demo\\frontend
+- Install dependencies:
+  npm install
+- Start dev server:
+  npm start
+- Frontend: http://localhost:3000
+
+3) Quick test
+- Use admin (admin@estateiq.local / admin123) or demo landlord (landlord@example.com / landlord123)
+- Visit Home to see demo property
+
+Notes:
+- For production, enable JWT, HTTPS, and PostgreSQL.
+- I can guide you step-by-step if any errors occur.

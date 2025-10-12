@@ -1,0 +1,1 @@
+# EstateIQ — Property Management System\n\nPhase-1+ starter package (backend Flask + frontend React). See SETUP_WINDOWS.txt for instructions.\n

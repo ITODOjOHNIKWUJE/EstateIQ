@@ -1,0 +1,4 @@
+__pycache__/n.env
+node_modules/
+database/db.sqlite3
+venv/
