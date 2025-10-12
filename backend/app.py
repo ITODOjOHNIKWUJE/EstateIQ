@@ -14,7 +14,9 @@ import os
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'estateiq-dev-secret')
-    CORS(app)
+    from flask_cors import CORS
+
+    CORS(app, resources={r"/*": {"origins": ["https://estate-iq-zeta.vercel.app", "http://localhost:3000"]}})
 
     create_tables()
     init_auth_routes(app)
