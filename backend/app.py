@@ -14,10 +14,18 @@ import os
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'estateiq-dev-secret')
-    from flask_cors import CORS
 
-    CORS(app, resources={r"/*": {"origins": ["https://estate-iq-zeta.vercel.app", "http://localhost:3000"]}})
+    # ✅ Allow frontend (Vercel) and localhost to access API
+    CORS(app, supports_credentials=True, resources={
+        r"/*": {
+            "origins": [
+                "https://estate-iq-zeta.vercel.app",
+                "http://localhost:3000"
+            ]
+        }
+    })
 
+    # ✅ Initialize database and routes
     create_tables()
     init_auth_routes(app)
     init_user_routes(app)
@@ -28,11 +36,12 @@ def create_app():
     init_payment_routes(app)
     init_maintenance_routes(app)
 
+    # ✅ Home route for API verification
     @app.route('/')
     def home():
-        return jsonify({'message': 'Welcome to EstateIQ API'})
+        return jsonify({'message': 'Welcome to EstateIQ API (Live on Render)'})
 
-    # ✅ This route returns sample payments for testing
+    # ✅ Sample payments for quick testing
     @app.route('/api/payments')
     def get_payments():
         sample_payments = [
@@ -48,4 +57,5 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    # ✅ Use 0.0.0.0 so Render detects the open port
+    app.run(host="0.0.0.0", port=port, debug=False)
