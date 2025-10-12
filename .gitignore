@@ -2,3 +2,18 @@ __pycache__/n.env
 node_modules/
 database/db.sqlite3
 venv/
+# Ignore Python / Flask build files
+__pycache__/
+*.pyc
+instance/
+.env
+
+# Ignore Node / React build files
+frontend/node_modules/
+frontend/build/
+*.log
+
+# System
+.DS_Store
+Thumbs.db
+
