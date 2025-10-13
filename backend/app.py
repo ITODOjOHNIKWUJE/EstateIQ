@@ -16,16 +16,21 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'estateiq-dev-secret')
 
-    # ✅ Full CORS configuration
-    CORS(app, resources={r"/api/*": {"origins": [
-        "https://estate-iq-zeta.vercel.app",
-        "http://localhost:3000"
-    ]}},
-    supports_credentials=True,
-    allow_headers=["Content-Type", "Authorization"],
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+    # ✅ Strong CORS policy that properly responds to preflight (OPTIONS) requests
+    #    Allows your Vercel frontend, localhost (dev), and the API host itself.
+    CORS(
+        app,
+        resources={r"/api/*": {"origins": [
+            "https://estate-iq-zeta.vercel.app",
+            "http://localhost:3000",
+            "https://estateiq-api-7eky.onrender.com"
+        ]}},
+        supports_credentials=True,
+        allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    )
 
-    # ✅ Initialize database & routes
+    # Initialize DB and routes
     create_tables()
     init_auth_routes(app)
     init_user_routes(app)
@@ -42,9 +47,9 @@ def create_app():
 
     return app
 
-
 if __name__ == '__main__':
     app = create_app()
-    port = int(os.environ.get("PORT", 5000))
-    # ✅ Bind to 0.0.0.0 for Render
-    app.run(host="0.0.0.0", port=port, debug=True)
+    # Render commonly uses PORT env var; use 10000 as a safe default locally if needed
+    port = int(os.environ.get("PORT", 10000))
+    # Bind to all interfaces so Render can detect the open port and accept connections
+    app.run(host="0.0.0.0", port=port, debug=False)
