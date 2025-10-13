@@ -11,21 +11,26 @@ from routes.leases import init_lease_routes
 from models import create_tables
 import os
 
+
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'estateiq-dev-secret')
 
-    # ✅ Allow both Render API & Vercel frontend
-    CORS(app, resources={r"/*": {
-        "origins": [
+    # ✅ FULL CORS FIX (for Vercel, Render, and localhost)
+    CORS(app,
+        origins=[
             "https://estate-iq-zeta.vercel.app",
             "https://estateiq-api-7eky.onrender.com",
             "http://localhost:3000"
         ],
-        "supports_credentials": True
-    }})
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "Authorization"],
+        supports_credentials=True
+    )
 
     create_tables()
+
+    # Register routes
     init_auth_routes(app)
     init_user_routes(app)
     init_property_routes(app)
@@ -44,5 +49,5 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
