@@ -12,7 +12,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
       const token = res.data.access_token;
       if (token) {
         saveToken(token);
@@ -30,8 +30,17 @@ export default function Login() {
   return (
     <div>
       <h2>Login</h2>
-      <input placeholder='Email' value={email} onChange={e => setEmail(e.target.value)} /><br />
-      <input placeholder='Password' type='password' value={password} onChange={e => setPassword(e.target.value)} /><br />
+      <input
+        placeholder='Email'
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+      /><br />
+      <input
+        placeholder='Password'
+        type='password'
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+      /><br />
       <button onClick={handleLogin}>Login</button>
     </div>
   );
