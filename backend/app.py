@@ -1,3 +1,4 @@
+# backend/app.py
 from flask import Flask, jsonify
 from flask_cors import CORS
 from routes.users import init_user_routes
@@ -15,15 +16,17 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'estateiq-dev-secret')
 
-    # ✅ Allow both local dev & Vercel production
-    CORS(app, supports_credentials=True, origins=[
+    # ✅ Full CORS configuration
+    CORS(app, resources={r"/api/*": {"origins": [
         "https://estate-iq-zeta.vercel.app",
         "http://localhost:3000"
-    ])
+    ]}},
+    supports_credentials=True,
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
+    # ✅ Initialize database & routes
     create_tables()
-
-    # ✅ Initialize all routes
     init_auth_routes(app)
     init_user_routes(app)
     init_property_routes(app)
@@ -43,5 +46,5 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     port = int(os.environ.get("PORT", 5000))
-    # ✅ Bind to all interfaces for Render
+    # ✅ Bind to 0.0.0.0 for Render
     app.run(host="0.0.0.0", port=port, debug=True)
