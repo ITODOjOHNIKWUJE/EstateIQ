@@ -12,17 +12,19 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
+      // ✅ Fixed endpoint
       const res = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
+
       const token = res.data.access_token;
       if (token) {
         saveToken(token);
         alert('Login successful');
         navigate('/dashboard');
       } else {
-        alert('Login failed');
+        alert('Login failed — no token returned');
       }
     } catch (e) {
-      console.error(e);
+      console.error('Login error:', e);
       alert('Login failed: ' + (e.response?.data?.error || e.message));
     }
   };
@@ -31,15 +33,15 @@ export default function Login() {
     <div>
       <h2>Login</h2>
       <input
-        placeholder="Email"
+        placeholder='Email'
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
       /><br />
       <input
-        placeholder="Password"
-        type="password"
+        placeholder='Password'
+        type='password'
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={e => setPassword(e.target.value)}
       /><br />
       <button onClick={handleLogin}>Login</button>
     </div>
