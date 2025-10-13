@@ -15,8 +15,15 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'estateiq-dev-secret')
 
-    # ✅ Enable CORS for all routes and origins (fixes “Network Error” on Vercel)
-    CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+    # ✅ Allow both Render API & Vercel frontend
+    CORS(app, resources={r"/*": {
+        "origins": [
+            "https://estate-iq-zeta.vercel.app",
+            "https://estateiq-api-7eky.onrender.com",
+            "http://localhost:3000"
+        ],
+        "supports_credentials": True
+    }})
 
     create_tables()
     init_auth_routes(app)
@@ -30,11 +37,12 @@ def create_app():
 
     @app.route('/')
     def home():
-        return jsonify({'message': 'Welcome to EstateIQ API - CORS Fixed ✅'})
+        return jsonify({'message': 'Welcome to EstateIQ API'})
 
     return app
 
+
 if __name__ == '__main__':
     app = create_app()
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port, debug=False)
