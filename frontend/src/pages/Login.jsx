@@ -31,15 +31,15 @@ export default function Login() {
     <div>
       <h2>Login</h2>
       <input
-        placeholder='Email'
+        placeholder="Email"
         value={email}
-        onChange={e => setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
       /><br />
       <input
-        placeholder='Password'
-        type='password'
+        placeholder="Password"
+        type="password"
         value={password}
-        onChange={e => setPassword(e.target.value)}
+        onChange={(e) => setPassword(e.target.value)}
       /><br />
       <button onClick={handleLogin}>Login</button>
     </div>
