@@ -10,6 +10,7 @@ def init_auth_routes(app):
     @app.route('/api/auth/register', methods=['POST'])
     def register():
         data = request.get_json() or {}
+        data = request.get_json() or {}
         print("🔍 Login data received:", data)
         name = data.get('name')
         email = data.get('email')
