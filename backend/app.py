@@ -16,8 +16,17 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'estateiq-dev-secret')
 
-    # ✅ TEMPORARY CORS FIX (allows all origins for testing)
-    CORS(app, origins=["*"], supports_credentials=True, allow_headers=["Content-Type", "Authorization"], methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+    # ✅ Complete and strict CORS setup for Render + Vercel
+    CORS(
+        app,
+        origins=[
+            "https://estate-iq-zeta.vercel.app",
+            "http://localhost:3000"
+        ],
+        supports_credentials=True,
+        allow_headers=["Content-Type", "Authorization"],
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    )
 
     # ✅ Initialize database & routes
     create_tables()
@@ -34,11 +43,21 @@ def create_app():
     def home():
         return jsonify({'message': 'Welcome to EstateIQ API'})
 
+    # ✅ Handle preflight CORS requests explicitly
+    @app.before_request
+    def handle_preflight():
+        from flask import request, make_response
+        if request.method == "OPTIONS":
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", request.headers.get("Origin", "*"))
+            response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+            response.headers.add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
+            return response, 200
+
     return app
 
 
 if __name__ == '__main__':
     app = create_app()
     port = int(os.environ.get("PORT", 5000))
-    # ✅ Bind to 0.0.0.0 for Render
     app.run(host="0.0.0.0", port=port, debug=True)
