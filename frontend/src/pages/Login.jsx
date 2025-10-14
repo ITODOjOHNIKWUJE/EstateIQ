@@ -13,7 +13,7 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       // ✅ Fixed endpoint
-      const res = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
 
       const token = res.data.access_token;
       if (token) {
