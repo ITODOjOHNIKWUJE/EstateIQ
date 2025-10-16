@@ -1,5 +1,5 @@
 # backend/app.py
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 from routes.users import init_user_routes
 from routes.properties import init_property_routes
@@ -16,19 +16,19 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'estateiq-dev-secret')
 
-    # ✅ Complete and strict CORS setup for Render + Vercel
+    # ✅ Full CORS setup for Vercel frontend & local dev
     CORS(
         app,
-        origins=[
+        resources={r"/api/*": {"origins": [
             "https://estate-iq-zeta.vercel.app",
             "http://localhost:3000"
-        ],
+        ]}},
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     )
 
-    # ✅ Initialize database & routes
+    # ✅ Database and routes
     create_tables()
     init_auth_routes(app)
     init_user_routes(app)
@@ -39,20 +39,18 @@ def create_app():
     init_payment_routes(app)
     init_maintenance_routes(app)
 
-    @app.route('/')
-    def home():
-        return jsonify({'message': 'Welcome to EstateIQ API'})
-
-    # ✅ Handle preflight CORS requests explicitly
     @app.before_request
     def handle_preflight():
-        from flask import request, make_response
         if request.method == "OPTIONS":
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", request.headers.get("Origin", "*"))
             response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
             response.headers.add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
             return response, 200
+
+    @app.route('/')
+    def home():
+        return jsonify({'message': 'Welcome to EstateIQ API'}), 200
 
     return app
 
