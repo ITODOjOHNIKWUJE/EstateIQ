@@ -1,0 +1,1 @@
+import React from 'react';import { useParams } from 'react-router-dom';export default function PropertyDetails(){const { id } = useParams();return (<div><h2>Property {id}</h2><p>Details coming soon.</p></div>)}
